@@ -65,6 +65,16 @@
         </div>
 
         <div class="control-section">
+          <label>SCENARIO PRESETS</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <button class="grav-btn" onclick="loadScenario('volcano')">🌋 Volcano</button>
+            <button class="grav-btn" onclick="loadScenario('bomb')">💥 Bomb Room</button>
+            <button class="grav-btn" onclick="loadScenario('acid')">🧪 Acid Lab</button>
+            <button class="grav-btn" onclick="loadScenario('garden')">🌱 Garden</button>
+          </div>
+        </div>
+
+        <div class="control-section">
           <label>THERMAL / HEAT OVERLAY</label>
           <button class="toggle-btn" id="btnThermal" onclick="toggleThermal()">🔥 HEATMAP: OFF</button>
         </div>

@@ -525,28 +525,103 @@ function exportSnapshot() {
   a.click();
 }
 
-// Pre-fill a starter landscape
-function initStarterScene() {
-  // Bedrock floor
+// Scenario Presets
+function loadScenario(preset) {
+  clearGrid();
+
+  // Floor bedrock
   for (let x = 0; x < WIDTH; x++) {
-    for (let y = HEIGHT - 10; y < HEIGHT; y++) {
+    for (let y = HEIGHT - 8; y < HEIGHT; y++) {
       grid[y * WIDTH + x] = TYPE_STONE;
     }
   }
 
-  // Wooden cup
-  for (let y = HEIGHT - 50; y < HEIGHT - 10; y++) {
-    grid[y * WIDTH + 40] = TYPE_WOOD;
-    grid[y * WIDTH + 90] = TYPE_WOOD;
-  }
-  for (let x = 40; x <= 90; x++) {
-    grid[(HEIGHT - 10) * WIDTH + x] = TYPE_WOOD;
-  }
+  if (preset === 'volcano') {
+    // Volcanic crater slopes
+    for (let y = HEIGHT - 80; y < HEIGHT - 8; y++) {
+      const wLeft = (y - (HEIGHT - 80)) * 1.1;
+      for (let x = 0; x < wLeft; x++) {
+        grid[y * WIDTH + x] = TYPE_STONE;
+      }
+      const wRight = (y - (HEIGHT - 80)) * 1.1;
+      for (let x = WIDTH - Math.floor(wRight); x < WIDTH; x++) {
+        grid[y * WIDTH + x] = TYPE_STONE;
+      }
+    }
 
-  // Water pool in cup
-  for (let y = HEIGHT - 30; y < HEIGHT - 10; y++) {
-    for (let x = 42; x < 88; x++) {
-      grid[y * WIDTH + x] = TYPE_WATER;
+    // Lake of water in left caldera
+    for (let y = HEIGHT - 40; y < HEIGHT - 8; y++) {
+      for (let x = 30; x < 90; x++) {
+        grid[y * WIDTH + x] = TYPE_WATER;
+      }
+    }
+
+    // Volcanic vent filled with molten lava
+    for (let y = 30; y < HEIGHT - 40; y++) {
+      for (let x = 110; x < 130; x++) {
+        grid[y * WIDTH + x] = TYPE_LAVA;
+      }
+    }
+
+    // Flammable oil pool on the right
+    for (let y = HEIGHT - 30; y < HEIGHT - 8; y++) {
+      for (let x = 150; x < 200; x++) {
+        grid[y * WIDTH + x] = TYPE_OIL;
+      }
+    }
+  } else if (preset === 'bomb') {
+    // Blast chamber with stone walls
+    for (let y = HEIGHT - 70; y < HEIGHT - 8; y++) {
+      grid[y * WIDTH + 80] = TYPE_STONE;
+      grid[y * WIDTH + 160] = TYPE_STONE;
+    }
+    for (let x = 80; x <= 160; x++) {
+      grid[(HEIGHT - 70) * WIDTH + x] = TYPE_STONE;
+    }
+
+    // Fill chamber with gunpowder
+    for (let y = HEIGHT - 68; y < HEIGHT - 10; y++) {
+      for (let x = 82; x < 158; x++) {
+        grid[y * WIDTH + x] = TYPE_GUNPOWDER;
+      }
+    }
+
+    // Wood fuse going out the top
+    for (let y = 20; y < HEIGHT - 70; y++) {
+      grid[y * WIDTH + 120] = TYPE_WOOD;
+    }
+    // Fire at the top of the fuse!
+    grid[20 * WIDTH + 120] = TYPE_FIRE;
+    grid[21 * WIDTH + 120] = TYPE_FIRE;
+  } else if (preset === 'acid') {
+    // Stepped stone and wood shelves
+    for (let x = 40; x < 120; x++) grid[(HEIGHT - 60) * WIDTH + x] = TYPE_WOOD;
+    for (let x = 100; x < 180; x++) grid[(HEIGHT - 40) * WIDTH + x] = TYPE_STONE;
+    for (let x = 60; x < 140; x++) grid[(HEIGHT - 20) * WIDTH + x] = TYPE_SAND;
+
+    // Dripping Acid pool at top
+    for (let y = 10; y < 25; y++) {
+      for (let x = 80; x < 140; x++) {
+        grid[y * WIDTH + x] = TYPE_ACID;
+      }
+    }
+  } else if (preset === 'garden') {
+    // Soil and stone garden beds
+    for (let y = HEIGHT - 40; y < HEIGHT - 8; y++) {
+      for (let x = 20; x < WIDTH - 20; x++) {
+        grid[y * WIDTH + x] = TYPE_WOOD;
+      }
+    }
+    // Plant sprouts
+    for (let x = 30; x < WIDTH - 30; x += 10) {
+      grid[(HEIGHT - 41) * WIDTH + x] = TYPE_PLANT;
+      grid[(HEIGHT - 42) * WIDTH + x] = TYPE_PLANT;
+    }
+    // Rain clouds above
+    for (let y = 10; y < 20; y++) {
+      for (let x = 20; x < WIDTH - 20; x++) {
+        if (Math.random() < 0.4) grid[y * WIDTH + x] = TYPE_WATER;
+      }
     }
   }
 }
@@ -555,6 +630,6 @@ function initStarterScene() {
 document.addEventListener('DOMContentLoaded', () => {
   setupPalette();
   setupMouseEvents();
-  initStarterScene();
+  loadScenario('volcano');
   requestAnimationFrame(gameLoop);
 });
